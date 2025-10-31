@@ -13,7 +13,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 3001;
 const RPC_URL = process.env.RPC_URL || 'http://127.0.0.1:8545';
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS?.toLowerCase();
 
 if (!PRIVATE_KEY || !CONTRACT_ADDRESS) {
 	console.error('Missing PRIVATE_KEY or CONTRACT_ADDRESS in environment');
@@ -92,11 +92,53 @@ app.post('/scans', async (req, res) => {
 			return res.status(400).json({ error: 'itemId, location, handler, signature required' });
 		}
 		const network = await provider.getNetwork();
-		const domain = EIP712_DOMAIN({ chainId: Number(network.chainId), verifyingContract: CONTRACT_ADDRESS });
-		const message = { itemId, location };
+		const networkChainId = Number(network.chainId);
+		// Use Sepolia chainId explicitly to match frontend (11155111)
+		// The frontend hardcodes SEPOLIA_CHAIN_ID = 11155111, so we must use the same
+		const SEPOLIA_CHAIN_ID = 11155111;
+		const chainId = networkChainId === SEPOLIA_CHAIN_ID ? SEPOLIA_CHAIN_ID : networkChainId;
+		
+		console.log('Network chainId from provider:', networkChainId);
+		console.log('Using chainId for EIP-712:', chainId);
+		
+		// Normalize contract address to lowercase for EIP-712
+		const normalizedContractAddress = CONTRACT_ADDRESS.toLowerCase();
+		const domain = EIP712_DOMAIN({ chainId, verifyingContract: normalizedContractAddress });
+		
+		// Ensure itemId is a number (not string) to match frontend exactly
+		const message = { 
+			itemId: Number(itemId), 
+			location: String(location) 
+		};
+		
+		console.log('Backend EIP-712 Domain:', domain);
+		console.log('Backend EIP-712 Message:', message);
+		console.log('Handler from request:', handler);
+		
 		const recovered = ethers.verifyTypedData(domain, EIP712_TYPES, message, signature);
-		if (recovered.toLowerCase() !== handler.toLowerCase()) {
-			return res.status(401).json({ error: 'Signature does not match handler' });
+		const normalizedHandler = handler.toLowerCase();
+		const normalizedRecovered = recovered.toLowerCase();
+		
+		console.log('Recovered address:', normalizedRecovered);
+		console.log('Handler address:', normalizedHandler);
+		
+		if (normalizedRecovered !== normalizedHandler) {
+			console.error('Signature mismatch:', {
+				recovered: normalizedRecovered,
+				handler: normalizedHandler,
+				chainId,
+				contractAddress: normalizedContractAddress,
+				domain,
+				message
+			});
+			return res.status(401).json({ 
+				error: 'Signature does not match handler',
+				details: {
+					recovered: normalizedRecovered,
+					handler: normalizedHandler,
+					chainId
+				}
+			});
 		}
 		// friendly timestamp
 		const now = new Date();

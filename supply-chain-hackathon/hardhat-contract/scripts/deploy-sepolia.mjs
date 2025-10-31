@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ethers } from 'ethers';
+import 'dotenv/config';
 
 const RPC_URL = process.env.SEPOLIA_RPC_URL;
 const PRIVATE_KEY = process.env.SEPOLIA_PRIVATE_KEY;
