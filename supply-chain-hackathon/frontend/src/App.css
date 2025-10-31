@@ -1,0 +1,156 @@
+:root {
+  --bg: #0b1020;
+  --card: #131a2b;
+  --muted: #8a96b2;
+  --text: #e6ecff;
+  --primary: #6ea8fe;
+  --primary-strong: #4f86f7;
+  --accent: #38d6bd;
+  --success: #25d366;
+  --danger: #ff6b6b;
+  --ring: rgba(110,168,254,0.35);
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(80,120,255,.15), transparent),
+              radial-gradient(800px 600px at -10% 20%, rgba(50,220,200,.12), transparent),
+              var(--bg);
+  color: var(--text);
+}
+
+#root { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #1b243a;
+  color: var(--muted);
+  border: 1px solid #202a44;
+}
+
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  backdrop-filter: blur(4px);
+  animation: fadeIn .4s ease-out;
+}
+
+.status {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.btn {
+  appearance: none;
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: #1b243a;
+  border: 1px solid #222c47;
+  transition: transform .12s ease, box-shadow .2s ease, background .2s ease, border .2s ease;
+  cursor: pointer;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0,0,0,.35); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: linear-gradient(180deg,var(--primary),var(--primary-strong)); border-color: transparent; }
+.btn-primary:hover { filter: brightness(1.05); box-shadow: 0 8px 22px var(--ring); }
+.btn-success { background: linear-gradient(180deg,#39d98a,#25c06d); border-color: transparent; }
+.btn-danger { background: linear-gradient(180deg,#ff7b7b,#ff5454); border-color: transparent; }
+
+.input, .select, .textarea {
+  width: 100%;
+  background: #0f1527;
+  border: 1px solid #1c2744;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  outline: none;
+  transition: box-shadow .2s ease, border .2s ease;
+}
+.input:focus, .select:focus, .textarea:focus { box-shadow: 0 0 0 6px var(--ring); border-color: var(--primary); }
+.label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display:block; }
+
+.stack { display: grid; gap: 10px; }
+.grid-2 { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+
+.scanner-frame {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+}
+.scanner-frame::after{
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 16px;
+  padding: 2px; pointer-events: none;
+  background: linear-gradient(120deg, rgba(110,168,254,.6), rgba(56,214,189,.6), rgba(110,168,254,.6));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: borderSpin 6s linear infinite;
+}
+
+@keyframes borderSpin { 100% { filter: hue-rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px);} to { opacity:1; transform: none; } }
+
+.tx-hash { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; word-break: break-all; color: var(--accent); }
+
+.hint { font-size: 12px; color: var(--muted); }
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}

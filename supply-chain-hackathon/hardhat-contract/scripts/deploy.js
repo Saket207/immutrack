@@ -1,0 +1,6 @@
+// File: hardhat-contract/scripts/deploy.js (UPDATED SECTION)
+// ...
+// Use Account #1's address you copied from Terminal 1
+const DEMO_HANDLER_ADDRESS = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"; 
+const TEST_ITEM_ID = 12345;
+// ...
